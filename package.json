@@ -1,0 +1,24 @@
+{
+  "name": "pensioner",
+  "version": "1.0.0",
+  "description": "cause you dont wanna work till you die",
+  "main": "index.js",
+  "author": "whiterook6",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "clean": "rm -rf ../static",
+    "build": "webpack --config webpack.config.js --stats-children",
+    "watch": "webpack --config webpack.config.js --watch"
+  },
+  "devDependencies": {
+    "html-webpack-plugin": "^5.3.0",
+    "ts-loader": "^8.0.17",
+    "typescript": "^4.2.3",
+    "webpack": "^5.24.3",
+    "webpack-cli": "^4.5.0"
+  },
+  "dependencies": {
+    "preact": "^10.5.13"
+  }
+}
