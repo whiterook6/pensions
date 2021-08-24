@@ -24,7 +24,9 @@ export const Estimates = () => {
         estimates: [
           ...estimates.slice(0, index),
           {
-            ...toCopy
+            ...toCopy,
+            createdAt: new Date(Date.now()),
+            editedAt: undefined,
           },
           ...estimates.slice(index)
         ],
@@ -35,9 +37,9 @@ export const Estimates = () => {
   const deleteEstimate = (index: number) => {
     if (index >= 0 && index < estimates.length) {
       const newEstimates = estimates.slice();
-      newEstimates.splice(index, 1);
+      const deleted = newEstimates.splice(index, 1);
       setState({
-        activeEstimate,
+        activeEstimate: deleted[0] === activeEstimate ? undefined : activeEstimate,
         estimates: newEstimates
       })
     }
@@ -76,12 +78,12 @@ export const Estimates = () => {
         <div>None saved. <button onClick={createNewEstimate}>Create New</button></div>
       )}
       {estimates.length > 0 && (
-        <table class="table">
+        <table class="table is-hoverable is-fullwidth is-striped">
           <thead>
             <tr>
               <th>Estimates</th>
               <th>
-                <button class="button" onClick={createNewEstimate} disabled={activeEstimate !== undefined}>Create New</button>
+                <button class="button is-small" onClick={createNewEstimate} disabled={activeEstimate !== undefined}>Create New</button>
               </th>
             </tr>
           </thead>
@@ -91,12 +93,14 @@ export const Estimates = () => {
               const onCopy = () => copyEstimate(index);
               const onDelete = () => deleteEstimate(index);
               return (
-                <tr key={index}>
+                <tr key={index} class={estimate === activeEstimate ? "is-selected" : ""}>
                   <td>{estimate.label || `Unnamed Estimate ${index}`}</td>
                   <td>
-                    <button class="button" onClick={onRestore}>Show</button>
-                    <button class="button" onClick={onCopy}>Copy</button>
-                    <button class="button" onClick={onDelete}>Delete</button>
+                    <div class="buttons">
+                      <button class="button is-small" onClick={onRestore}>Show</button>
+                      <button class="button is-small" onClick={onCopy}>Copy</button>
+                      <button class="button is-small is-danger" onClick={onDelete}>Delete</button>
+                    </div>
                   </td>
                 </tr>
               )
