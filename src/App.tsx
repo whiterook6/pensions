@@ -1,4 +1,5 @@
 import { useState } from "preact/hooks";
+import "bulma/css/bulma.min.css";
 
 export const App = () => {
   const [state, setState] = useState({
@@ -104,52 +105,69 @@ export const App = () => {
 
   
   return (
-    <div>
-      <h1>Ages</h1>
-      <label>Age at Retirement: {state.ageAtRetirement}</label>
-      <div>
-        <input type="range" min={1} max={100} value={state.ageAtRetirement} onInput={onChangeAgeAtRetirement} />
+    <div class="container">
+      <div class="columns">
+        <div class="column">
+          <h1>Options</h1>
+          <div class="field">
+            <label class="label">Age at Retirement: {state.ageAtRetirement}</label>
+            <div class="control">
+              <input class="slider is-fullwidth" type="range" min={1} max={100} value={state.ageAtRetirement} onInput={onChangeAgeAtRetirement} />
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Age at Death: {state.ageAtDeath}</label>
+            <div class="control">
+              <input class="slider is-fullwidth" type="range" min={1} max={100} value={state.ageAtDeath} onInput={onChangeAgeAtDeath} />
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Age of Spouse at Death: {state.ageOfSpouseAtDeath}</label>
+            <div class="control">
+              <input class="slider is-fullwidth" type="range" min={1} max={100} value={state.ageOfSpouseAtDeath} onInput={onChangeAgeOfSpouceAtDeath} />
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Monthly Pension Paynent</label>
+            <div class="control">
+              <input class="input" value={state.monthlyPension} onChange={onChangeMonthlyPension} />
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Bridge Payment (until 65)</label>
+            <div class="control">
+              <input class="input" value={state.bridgeUntil65} onChange={onChangeBridge} />
+            </div>
+          </div>        
+        </div>
+        <div class="column is-three-quarters">
+          <h1>Monthly Payments</h1>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Age</th>
+                <th>Month</th>
+                <th>Payment</th>
+                <th>Spouse Payment</th>
+                <th>Total Paid to Pensioner</th>
+                <th>Total Paid to Spouse</th>
+                <th>Total Paid</th>
+              </tr>
+            </thead>
+            {months.map(month => (
+              <tr key={`${month.age}${month.month}${month.totalPaidToPensioner}${month.totalPaidToSpouse}`}>
+                <td>{month.age}</td>
+                <td>{month.month + 1}</td>
+                <td>{month.pensioner}</td>
+                <td>{month.spouse}</td>
+                <td>{month.totalPaidToPensioner}</td>
+                <td>{month.totalPaidToSpouse}</td>
+                <td>{month.totalPaidToSpouse + month.totalPaidToPensioner}</td>
+              </tr>
+            ))}
+          </table>
+        </div>
       </div>
-      <label>Age at Death: {state.ageAtDeath}</label>
-      <div>
-        <input type="range" min={1} max={100} value={state.ageAtDeath} onInput={onChangeAgeAtDeath} />
-      </div>
-      <label>Age of Spouse at Death: {state.ageOfSpouseAtDeath}</label>
-      <div>
-        <input type="range" min={1} max={100} value={state.ageOfSpouseAtDeath} onInput={onChangeAgeOfSpouceAtDeath} />
-      </div>
-      <h2>Pension Value</h2>
-      <div>
-        <label>Monthly Pension Paynent</label>
-        <input value={state.monthlyPension} onChange={onChangeMonthlyPension} />
-      </div>
-      <div>
-        <label>Bridge Payment (until 65)</label>
-        <input value={state.bridgeUntil65} onChange={onChangeBridge} />
-      </div>
-      <h1>Payments</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Age</th>
-            <th>Month</th>
-            <th>Payment</th>
-            <th>Spouse Payment</th>
-            <th>Total Paid to Pensioner</th>
-            <th>Total Paid to Spouse</th>
-          </tr>
-        </thead>
-        {months.map(month => (
-          <tr key={`${month.age}${month.month}${month.totalPaidToPensioner}${month.totalPaidToSpouse}`}>
-            <td>{month.age}</td>
-            <td>{month.month + 1}</td>
-            <td>{month.pensioner}</td>
-            <td>{month.spouse}</td>
-            <td>{month.totalPaidToPensioner}</td>
-            <td>{month.totalPaidToSpouse}</td>
-          </tr>
-        ))}
-      </table>
     </div>
   );
 }
