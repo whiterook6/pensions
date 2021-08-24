@@ -4,6 +4,9 @@ import { IEstimate } from "./types";
 
 export const App = () => {
   const [state, setState] = useState<IEstimate>({
+    createdAt: new Date(Date.now()),
+    label: "",
+
     pensionerName: "",
     monthlyPension: 1500,
     bridge: 500,

@@ -1,4 +1,8 @@
 export interface IEstimate {
+  label: string;
+  createdAt: Date;
+  editedAt?: Date;
+  
   pensionerName: string;
   monthlyPension: number;
   bridge: number;
