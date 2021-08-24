@@ -100,7 +100,7 @@ export const App = () => {
           <div class="field">
             <label class="label">Bridge Payment (until 65)</label>
             <div class="control">
-              <input class="input" value={state.bridge} onChange={onChangeBridge} />
+              <input class="input" value={state.bridge} onChange={onChangeBridge} disabled={state.ageAtRetirement >= 65} />
             </div>
           </div>
           <h1>Spouse</h1>

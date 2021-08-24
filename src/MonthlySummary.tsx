@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useMemo, useState } from "preact/hooks";
 import { IEstimate } from "./types";
 
 interface IProps {
@@ -19,53 +19,57 @@ export const MonthlySummary = (props: IProps) => {
   const [collapseMonths, setCollapseMonths] = useState<boolean>(false);
   const onToggleCollapseMonths = () => setCollapseMonths(!collapseMonths);
   
-  let age = estimate.ageAtRetirement;
-  let months: IRow[] = [];
-  let totalPaidToPensioner = 0;
-  let totalPaidToSpouse = 0;
+  
+  const months = useMemo(() => {
+    let age = estimate.ageAtRetirement;
+    let payments: IRow[] = [];
+    let totalPaidToPensioner = 0;
+    let totalPaidToSpouse = 0;
 
-  while (age < 65 && age < estimate.ageAtDeath){
-    for (let month = 0; month < 12; month++){
-      totalPaidToPensioner += estimate.monthlyPension + estimate.bridge;
-      months.push({
-        age,
-        month,
-        pensioner: estimate.monthlyPension + estimate.bridge,
-        spouse: 0,
-        totalPaidToPensioner,
-        totalPaidToSpouse,
-      });
+    while (age < 65 && age < estimate.ageAtDeath){
+      for (let month = 0; month < 12; month++){
+        totalPaidToPensioner += estimate.monthlyPension + estimate.bridge;
+        payments.push({
+          age,
+          month,
+          pensioner: estimate.monthlyPension + estimate.bridge,
+          spouse: 0,
+          totalPaidToPensioner,
+          totalPaidToSpouse,
+        });
+      }
+      age ++;
     }
-    age ++;
-  }
-  while (age < estimate.ageAtDeath) {
-    for (let month = 0; month < 12; month++) {
-      totalPaidToPensioner += estimate.monthlyPension;
-      months.push({
-        age,
-        month,
-        pensioner: estimate.monthlyPension,
-        spouse: 0,
-        totalPaidToPensioner,
-        totalPaidToSpouse
-      });
+    while (age < estimate.ageAtDeath) {
+      for (let month = 0; month < 12; month++) {
+        totalPaidToPensioner += estimate.monthlyPension;
+        payments.push({
+          age,
+          month,
+          pensioner: estimate.monthlyPension,
+          spouse: 0,
+          totalPaidToPensioner,
+          totalPaidToSpouse
+        });
+      }
+      age++;
     }
-    age++;
-  }
-  while (age < estimate.spouseAgeAtDeath) {
-    for (let month = 0; month < 12; month++) {
-      totalPaidToSpouse += estimate.monthlyPension;
-      months.push({
-        age,
-        month,
-        pensioner: 0,
-        spouse: estimate.monthlyPension,
-        totalPaidToPensioner,
-        totalPaidToSpouse
-      });
+    while (age < estimate.spouseAgeAtDeath) {
+      for (let month = 0; month < 12; month++) {
+        totalPaidToSpouse += estimate.monthlyPension;
+        payments.push({
+          age,
+          month,
+          pensioner: 0,
+          spouse: estimate.monthlyPension,
+          totalPaidToPensioner,
+          totalPaidToSpouse
+        });
+      }
+      age++;
     }
-    age++;
-  }
+    return payments;
+  }, [estimate.ageAtRetirement, estimate.ageAtRetirement, estimate.bridge, estimate.monthlyPension, estimate.spouseAgeAtDeath]);
 
   let rows;
   if (collapseMonths){
@@ -161,5 +165,5 @@ export const MonthlySummary = (props: IProps) => {
         </tbody>
       </table>
     </div>
-  )
-}
+  );
+};
