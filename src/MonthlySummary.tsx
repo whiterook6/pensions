@@ -1,5 +1,5 @@
 import { useMemo, useState } from "preact/hooks";
-import { IEstimate } from "./types";
+import { calculateMonthlyPayment, IEstimate } from "./types";
 
 interface IProps {
   estimate: IEstimate;
@@ -21,49 +21,22 @@ export const MonthlySummary = (props: IProps) => {
   
   
   const months = useMemo(() => {
+    const payments = [];
     let age = estimate.ageAtRetirement;
-    let payments: IRow[] = [];
     let totalPaidToPensioner = 0;
     let totalPaidToSpouse = 0;
-
-    while (age < 65 && age < estimate.ageAtDeath){
+    while (age < Math.max(estimate.ageAtDeath, estimate.spouseAgeAtDeath)){
       for (let month = 0; month < 12; month++){
-        totalPaidToPensioner += estimate.monthlyPension + estimate.bridge;
+        const {pensioner, spouse, beneficiary} = calculateMonthlyPayment(age, estimate);
+        totalPaidToPensioner += pensioner;
+        totalPaidToSpouse += spouse;
         payments.push({
           age,
           month,
-          pensioner: estimate.monthlyPension + estimate.bridge,
-          spouse: 0,
+          pensioner,
+          spouse,
           totalPaidToPensioner,
           totalPaidToSpouse,
-        });
-      }
-      age ++;
-    }
-    while (age < estimate.ageAtDeath) {
-      for (let month = 0; month < 12; month++) {
-        totalPaidToPensioner += estimate.monthlyPension;
-        payments.push({
-          age,
-          month,
-          pensioner: estimate.monthlyPension,
-          spouse: 0,
-          totalPaidToPensioner,
-          totalPaidToSpouse
-        });
-      }
-      age++;
-    }
-    while (age < estimate.spouseAgeAtDeath) {
-      for (let month = 0; month < 12; month++) {
-        totalPaidToSpouse += estimate.monthlyPension;
-        payments.push({
-          age,
-          month,
-          pensioner: 0,
-          spouse: estimate.monthlyPension,
-          totalPaidToPensioner,
-          totalPaidToSpouse
         });
       }
       age++;
