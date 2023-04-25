@@ -1,20 +1,9 @@
 import { useState } from "preact/hooks";
 import { MonthlySummary } from "./MonthlySummary";
-import { IEstimate } from "./types";
+import { createEstimate, IEstimate } from "./types";
 
 export const App = () => {
-  const [state, setState] = useState<IEstimate>({
-    pensionerName: "",
-    monthlyPension: 1500,
-    bridge: 500,
-
-    ageAtRetirement: 65,
-    ageAtDeath: 85,
-
-    hasSpouse: true,
-    spouseName: "",
-    spouseAgeAtDeath: 85,
-  });
+  const [state, setState] = useState<IEstimate>(createEstimate());
 
   const onToggleHasSpouse = () => setState({...state, hasSpouse: !state.hasSpouse});
   const onChangePensionerName = (event: { currentTarget: { value: string } }) => {
@@ -64,6 +53,18 @@ export const App = () => {
       bridge: parseInt(event.currentTarget.value, 10)
     });
   };
+  const setJointLife = () => {
+    setState({
+      ...state,
+      lifeType: "joint life"
+    });
+  };
+  const setSingleLife = () => {
+    setState({
+      ...state,
+      lifeType: "single life"
+    });
+  };
 
   
 
@@ -101,6 +102,50 @@ export const App = () => {
             <label class="label">Bridge Payment (until 65)</label>
             <div class="control">
               <input class="input" value={state.bridge} onChange={onChangeBridge} disabled={state.ageAtRetirement >= 65} />
+            </div>
+          </div>
+          <h1>Options</h1>
+          <div class="field">
+            <div class="label">Joint or Single Life Option</div>
+            <div class="control">
+              <label class="radio">
+                <input type="radio" checked={state.lifeType === "single life"} onClick={setSingleLife} />
+                Single Life
+              </label>
+              <label class="radio">
+                <input type="radio" checked={state.lifeType === "joint life"} onClick={setJointLife} />
+                Joint life
+              </label>
+            </div>
+          </div>
+          <div class="field">
+            <div class="label">Guarantee Period</div>
+            <div class="control">
+              <label class="radio">
+                <input type="radio" checked={state.guaranteePeriod === 5} onClick={setSingleLife} />
+                5 Years
+              </label>
+              <label class="radio">
+                <input type="radio" checked={state.guaranteePeriod === 10} onClick={setJointLife} />
+                10 years
+              </label>
+              <label class="radio">
+                <input type="radio" checked={state.guaranteePeriod === 15} onClick={setJointLife} />
+                15 years
+              </label>
+            </div>
+          </div>
+          <div class="field">
+            <div class="label">Joint Life Percentage</div>
+            <div class="control">
+              <label class="radio">
+                <input type="radio" checked={state.jointLifePercentage === 5} onClick={setSingleLife} />
+                60%
+              </label>
+              <label class="radio">
+                <input type="radio" checked={state.guaranteePeriod === 10} onClick={setJointLife} />
+                100%
+              </label>
             </div>
           </div>
           <h1>Spouse</h1>
